@@ -5,7 +5,6 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export default class SpotifyAuth extends Component {
   render() {
-    console.log(API_URL);
     return (
       <div>
         <a href={`${API_URL}/spotify/auth/login`}>

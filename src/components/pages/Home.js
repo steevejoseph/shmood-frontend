@@ -2,6 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 import Spotify from 'spotify-web-api-js';
+import Helmet from 'react-helmet';
 
 import PlaylistCard from '../PlaylistCard';
 
@@ -17,7 +18,7 @@ export default class Home extends Component {
 
     if (params.access_token) {
       spotify.setAccessToken(params.access_token);
-      // console.log(`Bearer ${params.access_token}`);
+      console.log(`Bearer ${params.access_token}`);
     }
 
     this.renderPlaylists = this.renderPlaylists.bind(this);
@@ -25,7 +26,6 @@ export default class Home extends Component {
 
   componentDidMount() {
     spotify.getUserPlaylists().then(data => {
-      console.log(data.items);
       const playlists = data.items;
       this.setState({ playlists });
     });
@@ -45,7 +45,6 @@ export default class Home extends Component {
 
   renderPlaylists() {
     const { playlists } = this.state;
-    console.log(JSON.stringify(playlists));
     if (playlists) {
       return playlists.map(playlist => (
         <PlaylistCard key={playlist.id} playlist={playlist} />
@@ -56,10 +55,12 @@ export default class Home extends Component {
   }
 
   render() {
-    // console.log(this.state.playlists);
     return (
-      <div className="">
-        <ol>{this.renderPlaylists()}</ol>
+      <div>
+      <Helmet>
+        <style>{'body { background-color: #141719; }'}</style>
+      </Helmet>
+      <ol>{this.renderPlaylists()}</ol>
       </div>
     );
   }
