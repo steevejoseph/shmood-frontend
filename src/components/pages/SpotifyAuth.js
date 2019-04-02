@@ -5,9 +5,7 @@ import livemusic from '../../assets/vid/livemusic.mp4';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-
 const styles = {
-  
   content: {
     position: 'absolute',
     bottom: '50%',
@@ -33,19 +31,22 @@ const styles = {
 }
 
 export default class SpotifyAuth extends Component {
+  constructor(props){
+    super(props);
+    this.state={};
+  }
+
   render() {
     return (
       <div>
-        <video width={'100%'} height={'100%'}  minHeight="100%" minWidth="100%" autoPlay loop>
+        <video width={'100%'} height={'100%'} autoPlay loop>
           <source src={livemusic} type="video/mp4"></source>
         </video>
         <div style={styles.content}>
-          <a href={`#`}>
-        {/* <a href={`${API_URL}/spotify/auth/login`}> */}
-            <button style={styles.button}type="button">join the fun</button>
-          </a>
+        <a href={`${API_URL}/spotify/auth1/login`}>
+          <button style={styles.button} type="button">join the fun</button>
+        </a>
         </div>
-
       </div>
     );
   }
