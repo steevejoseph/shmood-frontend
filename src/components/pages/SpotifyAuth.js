@@ -43,7 +43,7 @@ export default class SpotifyAuth extends Component {
           <source src={livemusic} type="video/mp4"></source>
         </video>
         <div style={styles.content}>
-        <a href={`${API_URL}/spotify/auth1/login`}>
+        <a href={`${API_URL}/spotify/auth/login`}>
           <button style={styles.button} type="button">join the fun</button>
         </a>
         </div>
