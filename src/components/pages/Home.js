@@ -46,9 +46,7 @@ export default class Home extends Component {
   renderPlaylists() {
     const { playlists } = this.state;
     if (playlists) {
-      return playlists.map(playlist => (
-        <PlaylistCard key={playlist.id} playlist={playlist} />
-      ));
+      return playlists.map(playlist => <PlaylistCard key={playlist.id} playlist={playlist} />);
     }
 
     return <div>loading...</div>;
@@ -57,10 +55,12 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-      <Helmet>
-        <style>{'body { background-color: #141719; }'}</style>
-      </Helmet>
-      <ol>{this.renderPlaylists()}</ol>
+        <Helmet>
+          <style>{'body { background-color: #141719; }'}</style>
+        </Helmet>
+        <div className="container-fluid">
+          <ol>{this.renderPlaylists()}</ol>
+        </div>
       </div>
     );
   }

@@ -1,35 +1,51 @@
 import React, { Component } from 'react';
-import { Card } from '@material-ui/core';
+import { Card, CardTitle, CardSubtitle } from 'reactstrap';
 
 const styles = {
-  cardStyle: {
+  card: {
     width: '30em',
     height: '30em',
     margin: '10px',
     float: 'left',
-    backgroundColor: 'orange',
+    backgroundColor: '#282828',
+    justifyContent: 'space-between',
+  },
+  cardTitle: {
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
   },
 };
 
 export default class PlaylistCard extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
-    const uri_unembedded = this.props.playlist.external_urls.spotify;
-    const uri_split = uri_unembedded.split("playlist");
-    const uri = `${uri_split[0]}embed/playlist${uri_split[1]}`;
-
-    this.state = { uri, };
+    const uriUnembedded = this.props.playlist.external_urls.spotify;
+    const uriSplit = uriUnembedded.split('playlist');
+    const uri = `${uriSplit[0]}embed/playlist${uriSplit[1]}`;
+    this.state = { uri };
   }
 
   render() {
     const { playlist } = this.props;
-    const{ uri } = this.state;
-    const { cardStyle } = styles;
+    const { uri } = this.state;
+    const { card, cardTitle } = styles;
 
-    return <Card style={cardStyle}>
-    {playlist.name}dd{this.state.uri}dd{Math.random(100)}
-    <iframe src={uri} width={'100%'} height={'100%'} frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-      </Card>;
+    return (
+      <Card style={card}>
+        <CardTitle style={cardTitle}>{playlist.name}</CardTitle>
+        {/* <CardSubtitle>{this.state.uri}</CardSubtitle> */}
+        <iframe
+          title={uri}
+          src={uri}
+          width="100%"
+          height="100px"
+          frameBorder="0"
+          allowTransparency="true"
+          allow="encrypted-media"
+        />
+      </Card>
+    );
   }
 }
