@@ -25,12 +25,15 @@ export default class Navbar extends Component {
           </NavItem>
           <NavItem>
             <NavLink href="#" style={navLink}>
+              New Playlist
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink href="#" style={navLink}>
               Listening With You
             </NavLink>
           </NavItem>
-          {/* <NavItem>
-            <NavLink href="#">Link</NavLink>
-          </NavItem>
+          {/*
           <NavItem>
             <NavLink href="#">Link</NavLink>
           </NavItem>
