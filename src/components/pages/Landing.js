@@ -1,21 +1,17 @@
-import React, { Component } from 'react';
-import SpotifyAuth from './SpotifyAuth';
+import React, { Component, useState, useEffect } from 'react';
 import Helmet from 'react-helmet';
+import SpotifyAuth from './SpotifyAuth';
 
-export default class Landing extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+import livemusic from '../../assets/vid/livemusic.mp4';
 
-  render() {
-    return (
-      <div>
-        <Helmet>
-          <style>{'body { background-color: #141719; }'}</style>
-        </Helmet>
-        <SpotifyAuth />
-      </div>
-    );
-  }
-}
+const Landing = () => (
+  <div>
+    {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+    <video objectFit="cover" autoPlay loop>
+      <source src={livemusic} type="video/mp4" />
+    </video>
+    <SpotifyAuth />
+  </div>
+);
+
+export default Landing;

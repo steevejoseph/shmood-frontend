@@ -17,6 +17,7 @@
     "react-modal": "^3.8.1",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
+    "react-spinkit": "^3.0.0",
     "reactstrap": "^7.1.0",
     "serve": "^10.1.2",
     "spotify-web-api-js": "^1.2.0"

@@ -5,6 +5,7 @@ import Spotify from 'spotify-web-api-js';
 import Helmet from 'react-helmet';
 
 import PlaylistCard from '../PlaylistCard';
+import Navbar from '../Navbar';
 
 const spotify = new Spotify();
 
@@ -58,7 +59,8 @@ export default class Home extends Component {
         <Helmet>
           <style>{'body { background-color: #141719; }'}</style>
         </Helmet>
-        <div className="container-fluid">
+        <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
+          <Navbar />
           <ol>{this.renderPlaylists()}</ol>
         </div>
       </div>

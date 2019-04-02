@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import livemusic from '../../assets/vid/livemusic.mp4';
-
 const API_URL = process.env.REACT_APP_API_URL;
 
 const styles = {
@@ -15,39 +13,48 @@ const styles = {
     padding: 20,
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
-  button:{
+  button: {
     width: 200,
     fontSize: 18,
     padding: 10,
     border: 'none',
-    background: '#000',
+    // background: '#000',
     color: '#fff',
     background: 'rgba(0, 0, 0, 0.1)',
     cursor: 'pointer',
-    borerRadius: 10
-  }
-}
+    borerRadius: 10,
+  },
+};
 
 export default class SpotifyAuth extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={};
+    this.state = {
+      loggingIn: false,
+    };
   }
 
-  render() {
+  renderButton() {
+    if (this.state.loggingIn) {
+      return <div style={styles.content}>logging into Spotify...</div>;
+    }
+
     return (
       <div>
-        <video width={'100%'} height={'100%'} autoPlay loop>
-          <source src={livemusic} type="video/mp4"></source>
-        </video>
         <div style={styles.content}>
-        <a href={`${API_URL}/spotify/auth/login`}>
-          <button style={styles.button} type="button">join the fun</button>
-        </a>
+          <a href={`${API_URL}/spotify/auth/login`}>
+            <button onClick={() => this.setState({ loggingIn: true })} style={styles.button} type="button">
+              join the fun
+            </button>
+          </a>
         </div>
       </div>
     );
+  }
+
+  render() {
+    return <div>{this.renderButton()}</div>;
   }
 }
