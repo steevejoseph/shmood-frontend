@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import querystring from 'querystring';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -34,6 +35,9 @@ export default class SpotifyAuth extends Component {
     this.state = {
       loggingIn: false,
     };
+
+    // will have localhost:3000 as a param in querystring if on dev, else heroku.
+    this.loginUrl = `${API_URL}/spotify/auth/login?${querystring.stringify({ srcUrl: window.location.href })}`;
   }
 
   renderButton() {
@@ -44,7 +48,7 @@ export default class SpotifyAuth extends Component {
     return (
       <div>
         <div style={styles.content}>
-          <a href={`${API_URL}/spotify/auth/login`}>
+          <a href={this.loginUrl}>
             <button onClick={() => this.setState({ loggingIn: true })} style={styles.button} type="button">
               join the fun
             </button>
