@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Nav, Button } from 'reactstrap';
+import { Nav, Button, Navbar } from 'reactstrap';
 import Helmet from 'react-helmet';
 import Spotify from 'spotify-web-api-js';
 
@@ -12,15 +12,30 @@ import NewPlaylistForm from '../forms/NewPlaylistForm';
 const spotify = new Spotify();
 
 const styles = {
-  navDiv: {
-    width: 200,
+  sideNav: {
+    width: 300,
     padding: 10,
+    paddingTop: 50,
+  },
+  sideNavDiv: {
+    width: 200,
   },
   navLink: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 600,
     textAlign: 'left',
+  },
+  topNav: {
+    position: 'absolute',
+    width: '100%',
+    top: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    paddingTop: 50,
+  },
+  playlistDiv: {
+    marginTop: 50,
   },
 };
 
@@ -31,6 +46,7 @@ class Home extends Component {
     this.state = {
       playlists: [],
       selectedScreen: 'playlists',
+      selectedPlaylists: 'all',
     };
 
     if (params.access_token) {
@@ -60,18 +76,62 @@ class Home extends Component {
     return hashParams;
   }
 
-  renderNavbar() {
-    const { navDiv, navLink } = styles;
+  renderPlaylists() {
+    const { playlists } = this.state;
+    if (playlists) {
+      switch (this.state.selectedPlaylists) {
+        case 'shmood':
+          return this.renderShmoods();
+        default:
+          return playlists.map(playlist => <PlaylistCard key={playlist.id} playlist={playlist} />);
+      }
+    }
+
+    return <div>loading...</div>;
+  }
+
+  renderScreen() {
+    const { playlistDiv } = styles;
+    switch (this.state.selectedScreen) {
+      case 'newPlaylist':
+        return <NewPlaylistForm />;
+      case 'listeningWithYou':
+      default:
+        return (
+          <div style={playlistDiv}>
+            <ol>{this.renderPlaylists()}</ol>;
+          </div>
+        );
+    }
+  }
+
+  renderShmoods() {
+    const shmoods = this.state.playlists.filter(playlist => playlist.name.toLowerCase().includes('shmood'));
+
+    if (!shmoods || shmoods.length < 1) {
+      return (
+        <div>
+          You have no shmoods! :(
+          <Button onClick={() => this.setState({ selectedScreen: 'newPlaylist' })}>Create one!</Button>
+        </div>
+      );
+    }
+
+    return shmoods.map(playlist => <PlaylistCard key={playlist.id} playlist={playlist} />);
+  }
+
+  renderSideNav() {
+    const { sideNav, navLink, sideNavDiv } = styles;
     return (
-      <div style={navDiv}>
-        <Nav vertical pills>
+      <div style={sideNavDiv}>
+        <Nav vertical pills style={sideNav}>
           <Button color="link" onClick={() => this.setState({ selectedScreen: 'home' })} style={navLink}>
             Home
           </Button>
           <Button color="link" onClick={() => this.setState({ selectedScreen: 'newPlaylist' })} style={navLink}>
             New Playlist
           </Button>
-          <Button color="link" onClick={() => this.setState({ selectedScreen: 'listeningWithYou' })} style={navLink}>
+          <Button color="link" onClick={() => this.setState({ selectedScreen: 'home' })} style={navLink}>
             Listening With You
           </Button>
         </Nav>
@@ -79,22 +139,27 @@ class Home extends Component {
     );
   }
 
-  renderPlaylists() {
-    const { playlists } = this.state;
-    if (playlists) {
-      return playlists.map(playlist => <PlaylistCard key={playlist.id} playlist={playlist} />);
-    }
+  renderTopNav() {
+    const { topNav, navLink } = styles;
 
-    return <div>loading...</div>;
-  }
-
-  renderScreen() {
     switch (this.state.selectedScreen) {
       case 'newPlaylist':
-        return <NewPlaylistForm />;
-      case 'listeningWithYou':
+        return (
+          <Navbar style={topNav}>
+            <h2 style={{ color: '#fff' }}>New Shmood</h2>
+          </Navbar>
+        );
       default:
-        return <ol>{this.renderPlaylists()}</ol>;
+        return (
+          <Navbar style={topNav}>
+            <Button color="link" onClick={() => this.setState({ selectedPlaylists: 'all' })} style={navLink}>
+              All Playlists
+            </Button>
+            <Button color="link" onClick={() => this.setState({ selectedPlaylists: 'shmood' })} style={navLink}>
+              Shmoods
+            </Button>
+          </Navbar>
+        );
     }
   }
 
@@ -105,7 +170,8 @@ class Home extends Component {
           <style>{'body { background-color: #141719; }'}</style>
         </Helmet>
         <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
-          {this.renderNavbar()}
+          {this.renderTopNav()}
+          {this.renderSideNav()}
           {this.renderScreen()}
         </div>
       </div>

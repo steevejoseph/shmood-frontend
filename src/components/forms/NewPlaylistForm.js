@@ -10,6 +10,14 @@ import { connect } from 'react-redux';
 import { submitPhotoUrl, photoUrlChanged } from '../../actions';
 import { reWeburl } from '../../assets/scripts/regex-weburl';
 
+const styles = {
+  form: {
+    marginTop: 50,
+    flesDirection: 'column',
+    color: '#fff',
+  },
+};
+
 class PlaylistNew extends Component {
   constructor(props) {
     super(props);
@@ -46,7 +54,7 @@ class PlaylistNew extends Component {
     }
 
     return (
-      <div className={className}>
+      <div className={className} style={{ marginTop: 20, marginBottom: 20 }}>
         <label>{field.label}</label>
         {/* shorthand syntax for "pass everything in event object as a prop to the input" */}
         <input className="form-control" type="text" {...field.input} />
@@ -58,14 +66,15 @@ class PlaylistNew extends Component {
   render() {
     const { handleSubmit, currentPhotoUrl } = this.props;
     const src = currentPhotoUrl || '';
+    const { form } = styles;
     return (
-      <div>
+      <div className="container" style={form}>
         {/* might wanna @refactor this line (pull binding into constructor) */}
         <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
           {/* label is an arbitrary prop */}
           <Field label="Playlist Name" name="name" component={this.renderField} />
           <Field label="Image URL" name="imageUrl" component={this.renderField} />
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" style={{ marginTop: 20, marginBottom: 20 }}>
             Submit
           </button>
         </form>
