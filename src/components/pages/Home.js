@@ -1,20 +1,36 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
-import Spotify from 'spotify-web-api-js';
+import { connect } from 'react-redux';
+import { Nav, Button } from 'reactstrap';
 import Helmet from 'react-helmet';
+import Spotify from 'spotify-web-api-js';
 
 import PlaylistCard from '../PlaylistCard';
-import Navbar from '../Navbar';
+import NewPlaylistForm from '../forms/NewPlaylistForm';
 
 const spotify = new Spotify();
 
-export default class Home extends Component {
+const styles = {
+  navDiv: {
+    width: 200,
+    padding: 10,
+  },
+  navLink: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 600,
+    textAlign: 'left',
+  },
+};
+
+class Home extends Component {
   constructor(props) {
     super(props);
     const params = this.getHashParams();
     this.state = {
       playlists: [],
+      selectedScreen: 'playlists',
     };
 
     if (params.access_token) {
@@ -44,6 +60,25 @@ export default class Home extends Component {
     return hashParams;
   }
 
+  renderNavbar() {
+    const { navDiv, navLink } = styles;
+    return (
+      <div style={navDiv}>
+        <Nav vertical pills>
+          <Button color="link" onClick={() => this.setState({ selectedScreen: 'home' })} style={navLink}>
+            Home
+          </Button>
+          <Button color="link" onClick={() => this.setState({ selectedScreen: 'newPlaylist' })} style={navLink}>
+            New Playlist
+          </Button>
+          <Button color="link" onClick={() => this.setState({ selectedScreen: 'listeningWithYou' })} style={navLink}>
+            Listening With You
+          </Button>
+        </Nav>
+      </div>
+    );
+  }
+
   renderPlaylists() {
     const { playlists } = this.state;
     if (playlists) {
@@ -53,6 +88,16 @@ export default class Home extends Component {
     return <div>loading...</div>;
   }
 
+  renderScreen() {
+    switch (this.state.selectedScreen) {
+      case 'newPlaylist':
+        return <NewPlaylistForm />;
+      case 'listeningWithYou':
+      default:
+        return <ol>{this.renderPlaylists()}</ol>;
+    }
+  }
+
   render() {
     return (
       <div>
@@ -60,10 +105,12 @@ export default class Home extends Component {
           <style>{'body { background-color: #141719; }'}</style>
         </Helmet>
         <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
-          <Navbar />
-          <ol>{this.renderPlaylists()}</ol>
+          {this.renderNavbar()}
+          {this.renderScreen()}
         </div>
       </div>
     );
   }
 }
+
+export default Home;

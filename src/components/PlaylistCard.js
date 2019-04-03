@@ -25,7 +25,6 @@ export default class PlaylistCard extends Component {
   constructor(props) {
     super(props);
 
-    console.log(this.props.playlist.images[0].url);
     const uriUnembedded = this.props.playlist.external_urls.spotify;
     const uriSplit = uriUnembedded.split('playlist');
     const uri = `${uriSplit[0]}embed/playlist${uriSplit[1]}`;
@@ -51,15 +50,7 @@ export default class PlaylistCard extends Component {
         <Media>
           <Media object src={imgUrl} alt="Generic placeholder image" width="100%" height="100%" />
         </Media>
-        <iframe
-          title={uri}
-          src={uri}
-          width="100%"
-          height="100px"
-          frameBorder="0"
-          allowTransparency="true"
-          allow="encrypted-media"
-        />
+        <iframe title={uri} src={uri} width="100%" height="100px" frameBorder="0" allow="encrypted-media" />
       </Card>
     );
   }
