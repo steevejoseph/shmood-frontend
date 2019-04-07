@@ -62,6 +62,14 @@ class Home extends Component {
       const playlists = data.items;
       this.setState({ playlists });
     });
+
+    const bgColors = ['#11001C', '#3A015C', '#1B2021', '#9067C6', '#8D86C9'];
+
+    let colCounter = 0;
+    this.interval = setInterval(() => {
+      const bgcol = bgColors[++colCounter % bgColors.length];
+      this.setState(() => ({ bgcol }));
+    }, 3000);
   }
 
   getHashParams() {
@@ -166,9 +174,11 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Helmet>
-          <style>{'body { background-color: #141719; }'}</style>
-        </Helmet>
+        {/* <Helmet>
+          {/* old, black background */}
+        {/* <style>{'body { background-color: #141719; }'}</style> */}
+        <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style>
+        {/* </Helmet> */}
         <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
           {this.renderTopNav()}
           {this.renderSideNav()}
