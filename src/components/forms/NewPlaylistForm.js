@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import Spinner from 'react-spinkit';
 import { submitPhotoUrl, photoUrlChanged } from '../../actions';
 import { reWeburl } from '../../assets/scripts/regex-weburl';
 
@@ -63,10 +64,15 @@ class PlaylistNew extends Component {
     );
   }
 
-  render() {
+  renderForm() {
+    if (this.props.photoBeingSubmitted) {
+      return <Spinner name="line-scale" color="white" />;
+    }
+
     const { handleSubmit, currentPhotoUrl } = this.props;
     const src = currentPhotoUrl || '';
     const { form } = styles;
+
     return (
       <div className="container" style={form}>
         {/* might wanna @refactor this line (pull binding into constructor) */}
@@ -79,9 +85,13 @@ class PlaylistNew extends Component {
           </button>
         </form>
         <h3>Your image preview:</h3>
-        <img src={this.state.currentPhotoUrl} alt="" />
+        <img src={this.state.currentPhotoUrl} alt="" width="75%" />
       </div>
     );
+  }
+
+  render() {
+    return this.renderForm();
   }
 }
 
@@ -107,6 +117,7 @@ function validate(values) {
 
 const mapStateToProps = state => ({
   currentPhotoUrl: state.photo.currentPhotoUrl,
+  photoBeingSubmitted: state.photo.photoBeingSubmitted,
 });
 
 export default reduxForm({

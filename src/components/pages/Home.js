@@ -2,62 +2,50 @@
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Nav, Button, Navbar } from 'reactstrap';
 import Helmet from 'react-helmet';
 import Spotify from 'spotify-web-api-js';
 
-import PlaylistCard from '../PlaylistCard';
 import NewPlaylistForm from '../forms/NewPlaylistForm';
+import { setUserData, getUserData, refreshTokens, getHashParams } from '../../assets/scripts/spotify/auth';
+import { TopNav, SideNav, PlaylistScreen } from '../common';
+import ListeningWithYou from './ListeningWithYou/ListeningWithYou';
 
 const spotify = new Spotify();
 
 const styles = {
-  sideNav: {
-    width: 300,
-    padding: 10,
-    paddingTop: 50,
-  },
-  sideNavDiv: {
-    width: 200,
-  },
-  navLink: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 600,
-    textAlign: 'left',
-  },
-  topNav: {
-    position: 'absolute',
-    width: '100%',
-    top: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    paddingTop: 50,
-  },
-  playlistDiv: {
+  screenDiv: {
     marginTop: 50,
   },
 };
-
 class Home extends Component {
   constructor(props) {
     super(props);
-    const params = this.getHashParams();
+    const params = getHashParams();
     this.state = {
       playlists: [],
-      selectedScreen: 'playlists',
-      selectedPlaylists: 'all',
     };
 
     if (params.access_token) {
+      setUserData('spotifyAccessToken', params.access_token);
+      setUserData('spotifyRefreshToken', params.refresh_token);
+      const spotifyTokenExpirationTime = `${new Date().getTime() + params.expires_in * 1000}`;
+      setUserData('spotifyTokenExpirationTime', spotifyTokenExpirationTime);
       spotify.setAccessToken(params.access_token);
       console.log(`Bearer ${params.access_token}`);
     }
-
-    this.renderPlaylists = this.renderPlaylists.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const spotifyTokenExpirationTime = getUserData('spotifyTokenExpirationTime');
+
+    // user should have a token exp time, if not, redirect to login
+    if (!spotifyTokenExpirationTime) {
+      console.log('redirec needed!');
+    } else if (`${new Date().getTime()}` > getUserData('spotifyTokenExpirationTime')) {
+      // token is old, need to refresh
+      await refreshTokens();
+    }
+
     spotify.getUserPlaylists().then(data => {
       const playlists = data.items;
       this.setState({ playlists });
@@ -72,102 +60,15 @@ class Home extends Component {
     }, 3000);
   }
 
-  getHashParams() {
-    const hashParams = {};
-    let e;
-    const r = /([^&;=]+)=?([^&;]*)/g;
-
-    const q = window.location.hash.substring(1);
-    while ((e = r.exec(q))) {
-      hashParams[e[1]] = decodeURIComponent(e[2]);
-    }
-    return hashParams;
-  }
-
-  renderPlaylists() {
-    const { playlists } = this.state;
-    if (playlists) {
-      switch (this.state.selectedPlaylists) {
-        case 'shmood':
-          return this.renderShmoods();
-        default:
-          return playlists.map(playlist => <PlaylistCard key={playlist.id} playlist={playlist} />);
-      }
-    }
-
-    return <div>loading...</div>;
-  }
-
   renderScreen() {
-    const { playlistDiv } = styles;
-    switch (this.state.selectedScreen) {
+    console.log(this.props.selectedScreen);
+    switch (this.props.selectedScreen) {
       case 'newPlaylist':
         return <NewPlaylistForm />;
       case 'listeningWithYou':
+        return <ListeningWithYou />;
       default:
-        return (
-          <div style={playlistDiv}>
-            <ol>{this.renderPlaylists()}</ol>;
-          </div>
-        );
-    }
-  }
-
-  renderShmoods() {
-    const shmoods = this.state.playlists.filter(playlist => playlist.name.toLowerCase().includes('shmood'));
-
-    if (!shmoods || shmoods.length < 1) {
-      return (
-        <div>
-          You have no shmoods! :(
-          <Button onClick={() => this.setState({ selectedScreen: 'newPlaylist' })}>Create one!</Button>
-        </div>
-      );
-    }
-
-    return shmoods.map(playlist => <PlaylistCard key={playlist.id} playlist={playlist} />);
-  }
-
-  renderSideNav() {
-    const { sideNav, navLink, sideNavDiv } = styles;
-    return (
-      <div style={sideNavDiv}>
-        <Nav vertical pills style={sideNav}>
-          <Button color="link" onClick={() => this.setState({ selectedScreen: 'home' })} style={navLink}>
-            Home
-          </Button>
-          <Button color="link" onClick={() => this.setState({ selectedScreen: 'newPlaylist' })} style={navLink}>
-            New Playlist
-          </Button>
-          <Button color="link" onClick={() => this.setState({ selectedScreen: 'home' })} style={navLink}>
-            Listening With You
-          </Button>
-        </Nav>
-      </div>
-    );
-  }
-
-  renderTopNav() {
-    const { topNav, navLink } = styles;
-
-    switch (this.state.selectedScreen) {
-      case 'newPlaylist':
-        return (
-          <Navbar style={topNav}>
-            <h2 style={{ color: '#fff' }}>New Shmood</h2>
-          </Navbar>
-        );
-      default:
-        return (
-          <Navbar style={topNav}>
-            <Button color="link" onClick={() => this.setState({ selectedPlaylists: 'all' })} style={navLink}>
-              All Playlists
-            </Button>
-            <Button color="link" onClick={() => this.setState({ selectedPlaylists: 'shmood' })} style={navLink}>
-              Shmoods
-            </Button>
-          </Navbar>
-        );
+        return <PlaylistScreen playlists={this.state.playlists} />;
     }
   }
 
@@ -180,13 +81,17 @@ class Home extends Component {
         <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style>
         {/* </Helmet> */}
         <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
-          {this.renderTopNav()}
-          {this.renderSideNav()}
-          {this.renderScreen()}
+          <TopNav />
+          <SideNav />
+          <div style={styles.screenDiv}>{this.renderScreen()}</div>
         </div>
       </div>
     );
   }
 }
 
-export default Home;
+const mapStateToProps = state => ({
+  selectedScreen: state.screen.selectedScreen,
+});
+
+export default connect(mapStateToProps)(Home);
