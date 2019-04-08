@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 export const SCREEN_SELECTED = 'screen_selected';
+export const PLAYLIST_CATEGORY_SELECTED = 'playlist_category_selected';
 
 export const SUBMIT_PHOTO_URL = 'submit_photo_url';
 export const SUBMIT_PHOTO_URL_SUCCESS = 'submit_photo_url_success';

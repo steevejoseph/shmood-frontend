@@ -15,7 +15,7 @@ export const submitPhotoUrl = values => dispatch => {
 
   // @feature should add in a check for what happens if there's no faces in picture.
   axios
-    .post(`${API_URL}/azure/analyze`, { imageUrl })
+    .post(`${API_URL}/azure/submit`, { imageUrl })
     .then(res => {
       console.log(res);
       dispatch({
