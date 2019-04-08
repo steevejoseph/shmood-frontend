@@ -51,7 +51,7 @@ class Home extends Component {
       this.setState({ playlists });
     });
 
-    const bgColors = ['#11001C', '#3A015C', '#1B2021', '#9067C6', '#8D86C9'];
+    const bgColors = ['#11001C', '#3A015C', '#1B2021', '#353950', '#5f432b', '#274d61'];
 
     let colCounter = 0;
     this.interval = setInterval(() => {
