@@ -33,7 +33,14 @@ class MapContainer extends Component {
     console.log('googkey', process.env);
     return (
       <CurrentLocation centerAroundCurrentLocation google={this.props.google}>
-        <Marker onClick={this.onMarkerClick} name="You Are Here" />
+        <Marker onClick={this.onMarkerClick} name="You" />
+        <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
+          <div>
+            <h4>{this.state.selectedPlace.name}</h4>
+          </div>
+        </InfoWindow>
+
+        <Marker onClick={this.onMarkerClick} name="Steeve Joseph" position={{ lat: 28.6, lng: -81.2 }} />
         <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
           <div>
             <h4>{this.state.selectedPlace.name}</h4>
