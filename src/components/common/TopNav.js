@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, Button, Navbar } from 'reactstrap';
+import { Button, Navbar } from 'reactstrap';
 import { connect } from 'react-redux';
 import { selectPlaylistCategory } from '../../actions';
 

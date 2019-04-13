@@ -4,9 +4,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import Spotify from 'spotify-web-api-js';
+import { withRouter } from 'react-router-dom';
 
 import NewPlaylistForm from '../forms/NewPlaylistForm';
-import { setUserData, getUserData, refreshTokens, getHashParams } from '../../assets/scripts/spotify/auth';
+import { getUserData, checkInitialLogin, refreshTokensIfExpired } from '../../assets/scripts/spotify/auth';
 import { TopNav, SideNav, PlaylistScreen } from '../common';
 import ListeningWithYou from './ListeningWithYou/ListeningWithYou';
 
@@ -17,35 +18,35 @@ const styles = {
     marginTop: 50,
   },
 };
+
 class Home extends Component {
   constructor(props) {
     super(props);
-    const params = getHashParams();
     this.state = {
       playlists: [],
     };
 
-    if (params.access_token) {
-      setUserData('spotifyAccessToken', params.access_token);
-      setUserData('spotifyRefreshToken', params.refresh_token);
-      const spotifyTokenExpirationTime = `${new Date().getTime() + params.expires_in * 1000}`;
-      setUserData('spotifyTokenExpirationTime', spotifyTokenExpirationTime);
-      spotify.setAccessToken(params.access_token);
-      console.log(`Bearer ${params.access_token}`);
+    const accessToken = checkInitialLogin();
+    if (accessToken) {
+      spotify.setAccessToken(accessToken);
+      // console.log(`Bearer ${accessToken}`);
+      this.props.history.push('/home');
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const spotifyTokenExpirationTime = getUserData('spotifyTokenExpirationTime');
 
     // user should have a token exp time, if not, redirect to login
     if (!spotifyTokenExpirationTime) {
-      console.log('redirec needed!');
-    } else if (`${new Date().getTime()}` > getUserData('spotifyTokenExpirationTime')) {
-      // token is old, need to refresh
-      await refreshTokens();
+      this.props.history.push('/');
     }
 
+    refreshTokensIfExpired();
+    spotify.setAccessToken(getUserData('spotifyAccessToken'));
+
+    // might need a .catch() if req fails...
+    // refresh token?
     spotify.getUserPlaylists().then(data => {
       const playlists = data.items;
       this.setState({ playlists });
@@ -55,13 +56,14 @@ class Home extends Component {
 
     let colCounter = 0;
     this.interval = setInterval(() => {
+      // eslint-disable-next-line no-plusplus
       const bgcol = bgColors[++colCounter % bgColors.length];
       this.setState(() => ({ bgcol }));
     }, 3000);
   }
 
   renderScreen() {
-    console.log(this.props.selectedScreen);
+    // console.log(this.props.selectedScreen);
     switch (this.props.selectedScreen) {
       case 'newPlaylist':
         return <NewPlaylistForm />;
@@ -75,11 +77,11 @@ class Home extends Component {
   render() {
     return (
       <div>
-        {/* <Helmet>
+        <Helmet>
           {/* old, black background */}
-        {/* <style>{'body { background-color: #141719; }'}</style> */}
-        <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style>
-        {/* </Helmet> */}
+          {/* <style>{'body { background-color: #141719; }'}</style> */}
+          <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style>
+        </Helmet>
         <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
           <TopNav />
           <SideNav />
@@ -94,4 +96,4 @@ const mapStateToProps = state => ({
   selectedScreen: state.screen.selectedScreen,
 });
 
-export default connect(mapStateToProps)(Home);
+export default withRouter(connect(mapStateToProps)(Home));

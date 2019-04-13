@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Landing from './pages/Landing';
-import SpotifyAuth from './pages/SpotifyAuth';
 import Home from './pages/Home';
 
 export default class App extends Component {

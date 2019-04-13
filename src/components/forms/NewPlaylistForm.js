@@ -125,7 +125,7 @@ export default reduxForm({
   form: 'playlistNewForm', // a unique identifier for this form
 })(
   connect(
-    null,
+    mapStateToProps,
     { submitPhotoUrl, photoUrlChanged }
   )(PlaylistNew)
 );

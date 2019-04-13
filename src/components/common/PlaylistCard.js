@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, CardTitle, CardSubtitle, Media } from 'reactstrap';
+import { Card, CardTitle, Media } from 'reactstrap';
 
 const styles = {
   card: {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import querystring from 'querystring';
-import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 

@@ -1,5 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
-import Helmet from 'react-helmet';
+import React from 'react';
 import SpotifyAuth from './SpotifyAuth';
 
 import livemusic from '../../assets/vid/livemusic.mp4';

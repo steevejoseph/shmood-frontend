@@ -1,69 +1,60 @@
 import axios from 'axios';
-import { encode as btoa } from 'base-64';
 
-const scopesArr = [
-  'user-modify-playback-state',
-  'user-read-currently-playing',
-  'user-read-playback-state',
-  'user-library-modify',
-  'user-library-read',
-  'playlist-read-private',
-  'playlist-read-collaborative',
-  'playlist-modify-public',
-  'playlist-modify-private',
-  'user-read-recently-played',
-  'user-top-read',
-];
-
-const scopes = scopesArr.join(' ');
 const API_URL = process.env.REACT_APP_API_URL;
 
-export const getSpotifyCredentials = async () => {
-  const res = await axios.get(`${API_URL}/spotify/auth/get-credentials`);
-  const spotifyCredentials = res.data;
-  return spotifyCredentials;
+export const getSpotifyCredentials = () => {
+  axios
+    .get(`${API_URL}/spotify/auth/get-credentials`)
+    .then(res => res.data)
+    .catch(err => console.log('Error fetching credentials', err));
 };
 
-export const refreshTokens = async () => {
-  try {
-    const credentials = await getSpotifyCredentials(); // we wrote this function above
-    const credsB64 = btoa(`${credentials.clientId}:${credentials.clientSecret}`);
-    const refreshToken = getUserData('spotifyRefreshToken');
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${credsB64}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
-    });
-    const responseJson = await response.json();
-    if (responseJson.error) {
-      // await getTokens();
-    } else {
-      const { access_token: newAccessToken, refresh_token: newRefreshToken, expires_in: expiresIn } = responseJson;
-
+export const refreshTokens = () => {
+  axios
+    .post(`${API_URL}/spotify/auth/refresh_token`, {
+      accessToken: getUserData('spotifyAccessToken'),
+      refreshToken: getUserData('spotifyRefreshToken'),
+    })
+    .then(res => {
+      const { access_token: accessToken, expires_in: expiresIn } = res.data;
       const spotifyTokenExpirationTime = `${new Date().getTime() + expiresIn * 1000}`;
-      setUserData('spotifyAccessToken', newAccessToken);
-      if (newRefreshToken) {
-        setUserData('spotifyRefreshToken', newRefreshToken);
-      }
+      console.log('data:', res.data);
+      setUserData('spotifyAccessToken', accessToken);
       setUserData('spotifyTokenExpirationTime', spotifyTokenExpirationTime);
-    }
-  } catch (err) {
-    console.error(err);
-  }
+      console.log('Successful token refresh!');
+    })
+    .catch(err => console.log('Cannot refresh', err));
+};
+
+export const refreshTokensIfExpired = () => {
+  if (`${new Date().getTime()}` > getUserData('spotifyTokenExpirationTime')) refreshTokens();
 };
 
 export const setUserData = (key, value) => {
   localStorage.setItem(key, value);
-  console.log(`${key}:${value} is in localStorage!`);
+  // console.log(`${key}:${value} is in localStorage!`);
 };
 
 export const getUserData = key => {
   const value = localStorage.getItem(key);
-  console.log(`${key}:${value} received from localStorage!`);
+  // console.log(`${key}:${value} received from localStorage!`);
   return value;
+};
+
+// returns access token if on initial login.
+export const checkInitialLogin = () => {
+  const params = getHashParams();
+
+  if (params.access_token) {
+    setUserData('spotifyAccessToken', params.access_token);
+    setUserData('spotifyRefreshToken', params.refresh_token);
+    const spotifyTokenExpirationTime = `${new Date().getTime() + params.expires_in * 1000}`;
+    setUserData('spotifyTokenExpirationTime', spotifyTokenExpirationTime);
+    // console.log(`Bearer ${params.access_token}`);
+    return params.access_token;
+  }
+
+  return null;
 };
 
 export const getHashParams = () => {
@@ -72,6 +63,7 @@ export const getHashParams = () => {
   const r = /([^&;=]+)=?([^&;]*)/g;
 
   const q = window.location.hash.substring(1);
+  // eslint-disable-next-line no-cond-assign
   while ((e = r.exec(q))) {
     hashParams[e[1]] = decodeURIComponent(e[2]);
   }

@@ -1,5 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-import axios from 'axios';
 import { SCREEN_SELECTED, PLAYLIST_CATEGORY_SELECTED } from './types';
 
 export const selectScreen = screen => ({
