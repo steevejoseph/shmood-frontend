@@ -2,6 +2,7 @@
 import axios from 'axios';
 
 import { SUBMIT_PHOTO_URL, SUBMIT_PHOTO_URL_SUCCESS, SUBMIT_PHOTO_URL_FAIL, CURRENT_PHOTO_CHANGED } from './types';
+import { createPlaylist } from './PlaylistActions';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -22,6 +23,11 @@ export const submitPhotoUrl = values => dispatch => {
         type: SUBMIT_PHOTO_URL_SUCCESS,
         payload: res.data,
       });
+
+      values.imageBinary = res.data.imageBinary;
+      values.emotion = res.data.emotion;
+      values.degree = res.data.degree;
+      createPlaylist(values);
     })
     .catch(err => {
       console.log(err);

@@ -29,9 +29,15 @@ export default class PlaylistCard extends Component {
     const uriSplit = uriUnembedded.split('playlist');
     const uri = `${uriSplit[0]}embed/playlist${uriSplit[1]}`;
 
-    const imgUrl =
-      this.props.playlist.images[0].url ||
-      'https://i.kinja-img.com/gawker-media/image/upload/s--ypN6iH9q--/c_fill,fl_progressive,g_center,h_900,q_80,w_1600/zrarqnhmkoaihvzss5ek.jpg';
+    let imgUrl;
+
+    if (this.props.playlist.images && this.props.playlist.images.length > 0) {
+      imgUrl = this.props.playlist.images[0].url;
+    } else {
+      imgUrl =
+        'https://i.kinja-img.com/gawker-media/image/upload/s--ypN6iH9q--/c_fill,fl_progressive,g_center,h_900,q_80,w_1600/zrarqnhmkoaihvzss5ek.jpg';
+    }
+
     this.state = {
       uri,
       imgUrl,

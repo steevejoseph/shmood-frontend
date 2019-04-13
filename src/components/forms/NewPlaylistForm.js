@@ -97,6 +97,7 @@ class PlaylistNew extends Component {
 
 function validate(values) {
   const errors = {};
+  const imgExtensions = new Set(['.png', '.jpg', '.gif', '.jpeg']);
 
   if (!values.name) {
     errors.name = 'Playlist must have a name';
@@ -109,6 +110,10 @@ function validate(values) {
   if (values.imageUrl && !values.imageUrl.match(reWeburl)) {
     errors.imageUrl = 'Not a valid image URL.';
   }
+
+  // if (values.imageUrl && !imgExtensions.has(values.imageUrl.substring(values.imageUrl.length - 3))) {
+  //   errors.imageUrl = 'Sorry, we only accept jpg, png, and gif for now';
+  // }
 
   // if errors is empty, form is fine to submit
   // if errors has any properties, redux form assumes form is invalid
