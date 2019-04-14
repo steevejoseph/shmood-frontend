@@ -5,10 +5,12 @@
 /* eslint-disable jsx-a11y/label-has-for */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import Spinner from 'react-spinkit';
-import { submitPhotoUrl, photoUrlChanged } from '../../actions';
+import { submitPhotoUrl, photoUrlChanged, selectScreen } from '../../actions';
 import { reWeburl } from '../../assets/scripts/regex-weburl';
 
 const styles = {
@@ -33,6 +35,10 @@ class PlaylistNew extends Component {
 
     // send url (if there) to azure.
     this.props.submitPhotoUrl(values);
+    this.props.selectScreen('');
+
+    // @refactor: later should be redirecting to page with only new playlist
+    // this.props.history.push('/home');
   }
 
   // field is responsible for saying, "handle this input (with name 'name') specifically"
@@ -125,12 +131,14 @@ const mapStateToProps = state => ({
   photoBeingSubmitted: state.photo.photoBeingSubmitted,
 });
 
-export default reduxForm({
-  validate,
-  form: 'playlistNewForm', // a unique identifier for this form
-})(
-  connect(
-    mapStateToProps,
-    { submitPhotoUrl, photoUrlChanged }
-  )(PlaylistNew)
+export default withRouter(
+  reduxForm({
+    validate,
+    form: 'playlistNewForm', // a unique identifier for this form
+  })(
+    connect(
+      mapStateToProps,
+      { submitPhotoUrl, photoUrlChanged, selectScreen }
+    )(PlaylistNew)
+  )
 );
