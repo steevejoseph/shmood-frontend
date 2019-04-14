@@ -2,7 +2,6 @@
 import axios from 'axios';
 import Spotify from 'spotify-web-api-js';
 import { getUserData, refreshTokensIfExpired, seeds } from '../assets/scripts/spotify';
-import { SHMOOD_GENERATION_STARTED, SHMOOD_GENERATION_SUCCESS, SHMOOD_GENERATION_FAIL } from './types';
 
 const spotify = new Spotify();
 
@@ -25,12 +24,12 @@ export const createPlaylist = async values => {
   console.log('val', values);
 
   // 12171401054
-  const newShmood = await spotify.createPlaylist(me.id, {
+  const res = await spotify.createPlaylist(me.id, {
     name: `Shmood Presents: ${name}`,
   });
 
-  await addPhotoToPlaylist(newShmood.id, imageBinary);
-  await fillPlaylist(newShmood.id, values);
+  await addPhotoToPlaylist(res.id, imageBinary);
+  await fillPlaylist(res.id, values);
 };
 
 export const addPhotoToPlaylist = async (playlistId, imageData) => {
@@ -40,7 +39,7 @@ export const addPhotoToPlaylist = async (playlistId, imageData) => {
     .catch(err => console.log('uh-oh', err));
 };
 
-export const fillPlaylist = dispatch => (playlistId, values) => {
+export const fillPlaylist = async (playlistId, values) => {
   validateToken();
   const { emotion, degree } = values;
   const deg = degree > 0.5 ? 'high' : 'low';
@@ -55,23 +54,11 @@ export const fillPlaylist = dispatch => (playlistId, values) => {
   let songs;
   spotify
     .getRecommendations(options)
-    .then(res => {
+    .then(async res => {
       console.log(res);
       const { tracks } = res;
       songs = tracks.map(track => track.uri);
-      spotify
-        .addTracksToPlaylist(playlistId, songs)
-        .then(playlist => {
-          console.log(playlist);
-          dispatch({ type: SHMOOD_GENERATION_SUCCESS, payload: playlist });
-        })
-        .catch(err => {
-          console.log(err);
-          dispatch({ type: SHMOOD_GENERATION_FAIL, payload: err });
-        });
+      await spotify.addTracksToPlaylist(playlistId, songs);
     })
-    .catch(err => {
-      console.log(err);
-      dispatch({ type: SHMOOD_GENERATION_FAIL, payload: err });
-    });
+    .catch(err => console.log(err));
 };
