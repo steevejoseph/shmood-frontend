@@ -79,7 +79,7 @@ class Home extends Component {
       <div>
         <Helmet>
           {/* old, black background */}
-          {/* <style>{'body { background-color: #141719; }'}</style> */}
+          <style>{'body { background-color: #141719; }'}</style>
           <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style>
         </Helmet>
         <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
