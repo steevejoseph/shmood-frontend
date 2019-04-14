@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import axios from 'axios';
 import Spotify from 'spotify-web-api-js';
-import { getUserData, refreshTokensIfExpired } from '../assets/scripts/spotify/auth';
+import { getUserData, refreshTokensIfExpired, seeds } from '../assets/scripts/spotify';
 
 const spotify = new Spotify();
 
@@ -19,7 +19,7 @@ export const createPlaylist = async values => {
   // need err handling.
   const me = await spotify.getMe();
 
-  const { name, imageUrl, imageBinary } = values;
+  const { name, imageUrl, imageBinary, emotion, degree } = values;
 
   console.log('val', values);
 
@@ -28,13 +28,37 @@ export const createPlaylist = async values => {
     name: `Shmood Presents: ${name}`,
   });
 
-  const playlistId = res.id;
-  const imageData = imageBinary;
+  await addPhotoToPlaylist(res.id, imageBinary);
+  await fillPlaylist(res.id, values);
+};
 
+export const addPhotoToPlaylist = async (playlistId, imageData) => {
   spotify
     .uploadCustomPlaylistCoverImage(playlistId, imageData)
     .then(result => console.log(result))
     .catch(err => console.log('uh-oh', err));
+};
 
-  // @TODO: fill playlist based on recommendations from seeds.
+export const fillPlaylist = async (playlistId, values) => {
+  validateToken();
+  const { emotion, degree } = values;
+  const deg = degree > 0.5 ? 'high' : 'low';
+
+  // console.log('emotion is: ', emotion);
+  // console.log('degree is: ', degree);
+  // console.log('seeds is: ', seeds);
+  // console.log('seeds[emotion] is: ', seeds[emotion]);
+  // console.log('seeds[emotion].degree[deg] is: ', seeds[emotion].degree[deg]);
+  const options = seeds[emotion].degree[deg];
+
+  let songs;
+  spotify
+    .getRecommendations(options)
+    .then(async res => {
+      console.log(res);
+      const { tracks } = res;
+      songs = tracks.map(track => track.uri);
+      await spotify.addTracksToPlaylist(playlistId, songs);
+    })
+    .catch(err => console.log(err));
 };
