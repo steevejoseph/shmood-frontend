@@ -13,52 +13,44 @@ const validateToken = () => {
 // Creates and adds image to playlist.
 export const createPlaylist = async values => {
   validateToken();
-
   spotify.setAccessToken(getUserData('spotifyAccessToken'));
-
-  // need err handling.
-  const me = await spotify.getMe();
-
   const { name, imageUrl, imageBinary, emotion, degree } = values;
 
-  console.log('val', values);
+  try {
+    const me = await spotify.getMe();
+    const res = await spotify.createPlaylist(me.id, {
+      name: `Shmood Presents: ${name}`,
+    });
 
-  // 12171401054
-  const res = await spotify.createPlaylist(me.id, {
-    name: `Shmood Presents: ${name}`,
-  });
-
-  await addPhotoToPlaylist(res.id, imageBinary);
-  await fillPlaylist(res.id, values);
+    addPhotoToPlaylist(res.id, imageBinary);
+    fillPlaylist(res.id, values);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const addPhotoToPlaylist = async (playlistId, imageData) => {
-  spotify
-    .uploadCustomPlaylistCoverImage(playlistId, imageData)
-    .then(result => console.log(result))
-    .catch(err => console.log('uh-oh', err));
+  try {
+    const res = await spotify.uploadCustomPlaylistCoverImage(playlistId, imageData);
+    console.log(res);
+  } catch (err) {
+    console.log('uh-oh', err);
+  }
 };
 
 export const fillPlaylist = async (playlistId, values) => {
   validateToken();
   const { emotion, degree } = values;
   const deg = degree > 0.5 ? 'high' : 'low';
-
-  // console.log('emotion is: ', emotion);
-  // console.log('degree is: ', degree);
-  // console.log('seeds is: ', seeds);
-  // console.log('seeds[emotion] is: ', seeds[emotion]);
-  // console.log('seeds[emotion].degree[deg] is: ', seeds[emotion].degree[deg]);
   const options = seeds[emotion].degree[deg];
 
-  let songs;
-  spotify
-    .getRecommendations(options)
-    .then(async res => {
-      console.log(res);
-      const { tracks } = res;
-      songs = tracks.map(track => track.uri);
-      await spotify.addTracksToPlaylist(playlistId, songs);
-    })
-    .catch(err => console.log(err));
+  try {
+    const res = await spotify.getRecommendations(options);
+    console.log(res);
+    const { tracks } = res;
+    const songs = tracks.map(track => track.uri);
+    await spotify.addTracksToPlaylist(playlistId, songs);
+  } catch (err) {
+    console.log(err);
+  }
 };
