@@ -17,7 +17,7 @@ export const submitPhotoUrl = values => dispatch => {
   // @feature should add in a check for what happens if there's no faces in picture.
   axios
     .post(`${API_URL}/azure/submit`, { imageUrl })
-    .then(res => {
+    .then(async res => {
       console.log(res);
       dispatch({
         type: SUBMIT_PHOTO_URL_SUCCESS,

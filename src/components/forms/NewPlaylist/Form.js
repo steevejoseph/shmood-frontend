@@ -33,12 +33,13 @@ class PlaylistNew extends Component {
   onSubmit(values) {
     console.log(values);
 
-    // send url (if there) to azure.
-    this.props.submitPhotoUrl(values);
-    this.props.selectScreen('home');
+    const { history, playlist } = this.props;
+    // eslint-disable-next-line no-shadow
+    const { submitPhotoUrl } = this.props;
 
-    // @refactor: later should be redirecting to page with only new playlist
-    // this.props.history.push('/home');
+    // send url (if there) to azure.
+    submitPhotoUrl(values);
+    // history.push('/new-shmood');
   }
 
   // field is responsible for saying, "handle this input (with name 'name') specifically"
@@ -71,10 +72,6 @@ class PlaylistNew extends Component {
   }
 
   renderForm() {
-    if (this.props.photoBeingSubmitted) {
-      return <Spinner name="line-scale" color="white" />;
-    }
-
     const { handleSubmit, currentPhotoUrl } = this.props;
     const src = currentPhotoUrl || '';
     const { form } = styles;
@@ -126,10 +123,28 @@ function validate(values) {
   return errors;
 }
 
-const mapStateToProps = state => ({
-  currentPhotoUrl: state.photo.currentPhotoUrl,
-  photoBeingSubmitted: state.photo.photoBeingSubmitted,
-});
+const mapStateToProps = state => {
+  const { currentPhotoUrl, photoBeingSubmitted } = state.photo;
+
+  const {
+    playlistBeingGenerated,
+    playlistGenerationSuccess,
+    playlistGenerationFail,
+    playlistPhotoBeingAdded,
+    playlistPhotoAddSuccess,
+    playlistPhotoAddFail,
+  } = state.playlist;
+  return {
+    currentPhotoUrl,
+    photoBeingSubmitted,
+    playlistBeingGenerated,
+    playlistGenerationSuccess,
+    playlistGenerationFail,
+    playlistPhotoBeingAdded,
+    playlistPhotoAddSuccess,
+    playlistPhotoAddFail,
+  };
+};
 
 export default withRouter(
   reduxForm({
