@@ -10,8 +10,8 @@ import { withRouter } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import Spinner from 'react-spinkit';
-import { submitPhotoUrl, photoUrlChanged, selectScreen } from '../../actions';
-import { reWeburl } from '../../assets/scripts/regex-weburl';
+import { submitPhotoUrl, photoUrlChanged, selectScreen } from '../../../actions';
+import { reWeburl } from '../../../assets/scripts/regex-weburl';
 
 const styles = {
   form: {
@@ -35,7 +35,7 @@ class PlaylistNew extends Component {
 
     // send url (if there) to azure.
     this.props.submitPhotoUrl(values);
-    this.props.selectScreen('');
+    this.props.selectScreen('home');
 
     // @refactor: later should be redirecting to page with only new playlist
     // this.props.history.push('/home');

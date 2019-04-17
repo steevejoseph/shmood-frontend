@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Nav, Button } from 'reactstrap';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { selectScreen } from '../../actions';
 
 const styles = {
@@ -23,16 +24,17 @@ const styles = {
 class SideNav extends Component {
   render() {
     const { sideNav, navLink, sideNavDiv } = styles;
+    const { history } = this.props;
     return (
       <div style={sideNavDiv}>
         <Nav vertical pills style={sideNav}>
-          <Button color="link" onClick={() => this.props.selectScreen('home')} style={navLink}>
+          <Button color="link" onClick={() => history.push('/home')} style={navLink}>
             Home
           </Button>
-          <Button color="link" onClick={() => this.props.selectScreen('newPlaylist')} style={navLink}>
+          <Button color="link" onClick={() => history.push('/playlist/new')} style={navLink}>
             New Shmood
           </Button>
-          <Button color="link" onClick={() => this.props.selectScreen('listeningWithYou')} style={navLink}>
+          <Button color="link" onClick={() => history.push('/listening-with-you')} style={navLink}>
             Listening With You
           </Button>
         </Nav>
@@ -49,7 +51,9 @@ const mapDispatchToProps = {
   selectScreen,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SideNav);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SideNav)
+);

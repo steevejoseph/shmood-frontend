@@ -6,10 +6,9 @@ import Helmet from 'react-helmet';
 import Spotify from 'spotify-web-api-js';
 import { withRouter } from 'react-router-dom';
 
-import NewPlaylistForm from '../forms/NewPlaylistForm';
 import { getUserData, checkInitialLogin, refreshTokensIfExpired } from '../../assets/scripts/spotify/auth';
 import { TopNav, SideNav, PlaylistScreen } from '../common';
-import ListeningWithYou from './ListeningWithYou/ListeningWithYou';
+import { selectScreen } from '../../actions';
 
 const spotify = new Spotify();
 
@@ -32,6 +31,10 @@ class Home extends Component {
       // console.log(`Bearer ${accessToken}`);
       this.props.history.push('/home');
     }
+  }
+
+  componentWillMount() {
+    this.props.selectScreen('home');
   }
 
   componentDidMount() {
@@ -58,20 +61,9 @@ class Home extends Component {
     this.interval = setInterval(() => {
       // eslint-disable-next-line no-plusplus
       const bgcol = bgColors[++colCounter % bgColors.length];
+      // eslint-disable-next-line react/no-unused-state
       this.setState(() => ({ bgcol }));
     }, 3000);
-  }
-
-  renderScreen() {
-    // console.log(this.props.selectedScreen);
-    switch (this.props.selectedScreen) {
-      case 'newPlaylist':
-        return <NewPlaylistForm />;
-      case 'listeningWithYou':
-        return <ListeningWithYou />;
-      default:
-        return <PlaylistScreen playlists={this.state.playlists} />;
-    }
   }
 
   render() {
@@ -80,12 +72,14 @@ class Home extends Component {
         <Helmet>
           {/* old, black background */}
           <style>{'body { background-color: #141719; }'}</style>
-          <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style>
+          {/* <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style> */}
         </Helmet>
         <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
           <TopNav />
           <SideNav />
-          <div style={styles.screenDiv}>{this.renderScreen()}</div>
+          <div style={styles.screenDiv}>
+            <PlaylistScreen playlists={this.state.playlists} />
+          </div>
         </div>
       </div>
     );
@@ -96,4 +90,9 @@ const mapStateToProps = state => ({
   selectedScreen: state.screen.selectedScreen,
 });
 
-export default withRouter(connect(mapStateToProps)(Home));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { selectScreen }
+  )(Home)
+);

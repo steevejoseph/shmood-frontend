@@ -22,27 +22,41 @@ const styles = {
 class TopNav extends Component {
   render() {
     const { topNav, navLink } = styles;
+    // eslint-disable-next-line no-shadow
+    const { selectedScreen, selectPlaylistCategory } = this.props;
 
-    switch (this.props.selectedScreen) {
-      case 'newPlaylist':
+    switch (selectedScreen) {
+      case 'new-playlist':
         return (
           <Navbar style={topNav}>
             <h2 style={{ color: '#fff' }}>New Shmood</h2>
           </Navbar>
         );
-      case 'listeningWithYou':
+      case 'listening-with-you':
         return (
           <Navbar style={topNav}>
             <h2 style={{ color: '#fff' }}>Users Listening In Your Area</h2>
           </Navbar>
         );
+      case 'home':
+        return (
+          <Navbar style={topNav}>
+            <Button color="link" onClick={() => selectPlaylistCategory('')} style={navLink}>
+              <h2>All Playlists</h2>
+            </Button>
+            <Button color="link" onClick={() => selectPlaylistCategory('shmood')} style={navLink}>
+              <h2>Shmoods</h2>
+            </Button>
+          </Navbar>
+        );
+
       default:
         return (
           <Navbar style={topNav}>
-            <Button color="link" onClick={() => this.props.selectPlaylistCategory('')} style={navLink}>
+            <Button color="link" onClick={() => selectPlaylistCategory('')} style={navLink}>
               <h2>All Playlists</h2>
             </Button>
-            <Button color="link" onClick={() => this.props.selectPlaylistCategory('shmood')} style={navLink}>
+            <Button color="link" onClick={() => selectPlaylistCategory('shmood')} style={navLink}>
               <h2>Shmoods</h2>
             </Button>
           </Navbar>
