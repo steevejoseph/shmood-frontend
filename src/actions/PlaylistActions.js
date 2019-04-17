@@ -3,6 +3,15 @@ import axios from 'axios';
 import Spotify from 'spotify-web-api-js';
 import { getUserData, refreshTokensIfExpired, seeds } from '../assets/scripts/spotify';
 
+import {
+  PLAYLIST_GENERATION_STARTED,
+  PLAYLIST_GENERATION_SUCCESS,
+  PLAYLIST_GENERATION_FAIL,
+  PLAYLIST_PHOTO_ADD_STARTED,
+  PLAYLIST_PHOTO_ADD_SUCCESS,
+  PLAYLIST_PHOTO_ADD_FAIL,
+} from './types';
+
 const spotify = new Spotify();
 
 const validateToken = () => {
