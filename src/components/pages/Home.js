@@ -40,7 +40,6 @@ class Home extends Component {
   componentDidMount() {
     const spotifyTokenExpirationTime = getUserData('spotifyTokenExpirationTime');
 
-    // user should have a token exp time, if not, redirect to login
     if (!spotifyTokenExpirationTime) {
       this.props.history.push('/');
     }
@@ -54,25 +53,13 @@ class Home extends Component {
       const playlists = data.items;
       this.setState({ playlists });
     });
-
-    const bgColors = ['#11001C', '#3A015C', '#1B2021', '#353950', '#5f432b', '#274d61'];
-
-    let colCounter = 0;
-    this.interval = setInterval(() => {
-      // eslint-disable-next-line no-plusplus
-      const bgcol = bgColors[++colCounter % bgColors.length];
-      // eslint-disable-next-line react/no-unused-state
-      this.setState(() => ({ bgcol }));
-    }, 3000);
   }
 
   render() {
     return (
       <div>
         <Helmet>
-          {/* old, black background */}
           <style>{'body { background-color: #141719; }'}</style>
-          {/* <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style> */}
         </Helmet>
         <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
           <TopNav />
