@@ -3,6 +3,7 @@ import axios from 'axios';
 import Spotify from 'spotify-web-api-js';
 import { getUserData, refreshTokensIfExpired, seeds } from '../assets/scripts/spotify';
 
+import { history } from '../components/App';
 import {
   PLAYLIST_GENERATION_STARTED,
   PLAYLIST_GENERATION_SUCCESS,
@@ -20,46 +21,75 @@ const validateToken = () => {
 };
 
 // Creates and adds image to playlist.
-export const createPlaylist = async values => {
+export const createPlaylist = values => dispatch => {
   validateToken();
   spotify.setAccessToken(getUserData('spotifyAccessToken'));
   const { name, imageUrl, imageBinary, emotion, degree } = values;
 
-  try {
-    const me = await spotify.getMe();
-    const res = await spotify.createPlaylist(me.id, {
-      name: `Shmood Presents: ${name}`,
+  console.log('hello');
+  dispatch({ type: PLAYLIST_GENERATION_STARTED });
+  spotify
+    .getMe()
+    .then(me => {
+      spotify
+        .createPlaylist(me.id, { name: `Shmood Presents: ${name}` })
+        .then(res => {
+          dispatch(addPhotoToPlaylist(res.id, imageBinary));
+          dispatch(fillPlaylist(res.id, values));
+          setTimeout(() => {}, 1000);
+          history.push(`/playlist/${res.id}`, { loading: true });
+        })
+        .catch(err => {
+          console.log('Cannot create playlist', err);
+          dispatch({ type: PLAYLIST_GENERATION_FAIL });
+        });
+    })
+    .catch(err => {
+      console.log('Cannot get "me"', err);
+      dispatch({ type: PLAYLIST_GENERATION_FAIL });
     });
-
-    addPhotoToPlaylist(res.id, imageBinary);
-    fillPlaylist(res.id, values);
-  } catch (err) {
-    console.log(err);
-  }
 };
 
-export const addPhotoToPlaylist = async (playlistId, imageData) => {
-  try {
-    const res = await spotify.uploadCustomPlaylistCoverImage(playlistId, imageData);
-    console.log(res);
-  } catch (err) {
-    console.log('uh-oh', err);
-  }
+export const addPhotoToPlaylist = (playlistId, imageData) => dispatch => {
+  dispatch({ type: PLAYLIST_PHOTO_ADD_STARTED });
+
+  spotify
+    .uploadCustomPlaylistCoverImage(playlistId, imageData)
+    .then(res => {
+      console.log(res);
+      dispatch({ type: PLAYLIST_PHOTO_ADD_SUCCESS });
+    })
+    .catch(err => {
+      console.log('Cannot add photo to playlist', err);
+      dispatch({ type: PLAYLIST_PHOTO_ADD_FAIL });
+    });
 };
 
-export const fillPlaylist = async (playlistId, values) => {
+export const fillPlaylist = (playlistId, values) => dispatch => {
   validateToken();
   const { emotion, degree } = values;
   const deg = degree > 0.5 ? 'high' : 'low';
   const options = seeds[emotion].degree[deg];
 
-  try {
-    const res = await spotify.getRecommendations(options);
-    console.log(res);
-    const { tracks } = res;
-    const songs = tracks.map(track => track.uri);
-    await spotify.addTracksToPlaylist(playlistId, songs);
-  } catch (err) {
-    console.log(err);
-  }
+  spotify
+    .getRecommendations(options)
+    .then(res => {
+      console.log(res);
+      const { tracks } = res;
+      const songs = tracks.map(track => track.uri);
+      spotify
+        .addTracksToPlaylist(playlistId, songs)
+        .then(result => {
+          console.log(result);
+          dispatch({ type: PLAYLIST_GENERATION_SUCCESS });
+        })
+        .catch('Cannot add tracks to playlists', err => {
+          console.log(err);
+          dispatch({ type: PLAYLIST_GENERATION_FAIL });
+        });
+    })
+    .catch(err => {
+      console.log('Cannot get recommendations', err);
+      dispatch({ type: PLAYLIST_GENERATION_FAIL });
+    });
 };

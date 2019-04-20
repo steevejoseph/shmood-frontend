@@ -31,14 +31,7 @@ class PlaylistNew extends Component {
   }
 
   onSubmit(values) {
-    console.log(values);
-
-    // send url (if there) to azure.
     this.props.submitPhotoUrl(values);
-    this.props.selectScreen('home');
-
-    // @refactor: later should be redirecting to page with only new playlist
-    // this.props.history.push('/home');
   }
 
   // field is responsible for saying, "handle this input (with name 'name') specifically"
