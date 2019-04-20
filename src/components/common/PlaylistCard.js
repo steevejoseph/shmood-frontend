@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardTitle, Media } from 'reactstrap';
 
 const styles = {
@@ -53,9 +54,11 @@ export default class PlaylistCard extends Component {
       <Card style={card}>
         <CardTitle style={cardTitle}>{playlist.name}</CardTitle>
         {/* <CardSubtitle>{this.state.uri}</CardSubtitle> */}
-        <Media>
-          <Media object src={imgUrl} alt="Generic placeholder image" width="100%" height="100%" />
-        </Media>
+        <Link to={`/playlist/${playlist.id}`}>
+          <Media>
+            <Media object src={imgUrl} alt="Generic placeholder image" width="100%" height="100%" />
+          </Media>
+        </Link>
         <iframe title={uri} src={uri} width="100%" height="100px" frameBorder="0" allow="encrypted-media" />
       </Card>
     );

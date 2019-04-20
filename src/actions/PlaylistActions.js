@@ -33,7 +33,7 @@ export const createPlaylist = values => async dispatch => {
     const newPlaylist = await spotify.createPlaylist(me.id, { name: `Shmood Presents: ${name}` });
     dispatch(addPhotoToPlaylist(newPlaylist.id, imageBinary));
     dispatch(fillPlaylist(newPlaylist.id, values));
-    history.push(`/playlist/${newPlaylist.id}`, { loading: true });
+    history.push(`/playlist/${newPlaylist.id}`);
   } catch (err) {
     console.log(err);
     dispatch({ type: PLAYLIST_GENERATION_FAIL });

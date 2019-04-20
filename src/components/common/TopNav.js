@@ -25,14 +25,14 @@ class TopNav extends Component {
     // eslint-disable-next-line no-shadow
     const { selectedScreen, selectPlaylistCategory } = this.props;
 
-    switch (selectedScreen) {
-      case 'new-playlist':
+    switch (window.location.pathname) {
+      case '/playlist/new':
         return (
           <Navbar style={topNav}>
             <h2 style={{ color: '#fff' }}>New Shmood</h2>
           </Navbar>
         );
-      case 'listening-with-you':
+      case '/listening-with-you':
         return (
           <Navbar style={topNav}>
             <h2 style={{ color: '#fff' }}>Users Listening In Your Area</h2>
@@ -49,18 +49,8 @@ class TopNav extends Component {
             </Button>
           </Navbar>
         );
-
       default:
-        return (
-          <Navbar style={topNav}>
-            <Button color="link" onClick={() => selectPlaylistCategory('')} style={navLink}>
-              <h2>All Playlists</h2>
-            </Button>
-            <Button color="link" onClick={() => selectPlaylistCategory('shmood')} style={navLink}>
-              <h2>Shmoods</h2>
-            </Button>
-          </Navbar>
-        );
+        return <div />;
     }
   }
 }

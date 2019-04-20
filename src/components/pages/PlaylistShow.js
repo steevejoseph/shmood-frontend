@@ -15,7 +15,7 @@ const styles = {
 export default class PlaylistShow extends Component {
   state = {
     playlist: null,
-    loading: this.props.history.location.state.loading,
+    loading: true,
   };
 
   constructor(props) {
@@ -42,7 +42,7 @@ export default class PlaylistShow extends Component {
     if (this.state.loading) {
       setTimeout(() => {
         this.setState({ loading: false });
-      }, 3000);
+      }, 1500);
     }
   }
 
