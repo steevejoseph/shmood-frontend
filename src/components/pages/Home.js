@@ -5,12 +5,14 @@ import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import Spotify from 'spotify-web-api-js';
 import { withRouter } from 'react-router-dom';
+import axios from 'axios';
 
 import { getUserData, checkInitialLogin, refreshTokensIfExpired } from '../../assets/scripts/spotify/auth';
 import { TopNav, SideNav, PlaylistScreen } from '../common';
 import { selectScreen } from '../../actions';
 
 const spotify = new Spotify();
+const API_URL = process.env.REACT_APP_API_URL;
 
 const styles = {
   screenDiv: {
@@ -31,6 +33,9 @@ class Home extends Component {
       // console.log(`Bearer ${accessToken}`);
       this.props.history.push('/home');
     }
+
+    this.handleAuthRefresh = this.handleAuthRefresh.bind(this);
+    this.handleUpdateUserLocation = this.handleUpdateUserLocation.bind(this);
   }
 
   componentWillMount() {
@@ -38,6 +43,18 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    this.handleAuthRefresh();
+    this.handleUpdateUserLocation();
+
+    // might need a .catch() if req fails...
+    // refresh token?
+    spotify.getUserPlaylists().then(data => {
+      const playlists = data.items;
+      this.setState({ playlists });
+    });
+  }
+
+  handleAuthRefresh() {
     const spotifyTokenExpirationTime = getUserData('spotifyTokenExpirationTime');
 
     if (!spotifyTokenExpirationTime) {
@@ -46,13 +63,28 @@ class Home extends Component {
 
     refreshTokensIfExpired();
     spotify.setAccessToken(getUserData('spotifyAccessToken'));
+  }
 
-    // might need a .catch() if req fails...
-    // refresh token?
-    spotify.getUserPlaylists().then(data => {
-      const playlists = data.items;
-      this.setState({ playlists });
-    });
+  async handleUpdateUserLocation() {
+    const me = await spotify.getMe();
+
+    const succ = position => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      console.log('lat:', position.coords.latitude);
+      console.log('long:', position.coords.longitude);
+      axios
+        .post(`${API_URL}/users/update-user-location`, { spotifyId: me.id, lat, lng })
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+    };
+
+    const fail = err => {
+      console.log('yeet, cannot get location!');
+    };
+
+    navigator.geolocation.getCurrentPosition(succ, fail);
   }
 
   render() {
