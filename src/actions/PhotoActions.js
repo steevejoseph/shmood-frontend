@@ -27,7 +27,7 @@ export const submitPhotoUrl = values => dispatch => {
       values.imageBinary = res.data.imageBinary;
       values.emotion = res.data.emotion;
       values.degree = res.data.degree;
-      createPlaylist(values);
+      dispatch(createPlaylist(values));
     })
     .catch(err => {
       console.log(err);
