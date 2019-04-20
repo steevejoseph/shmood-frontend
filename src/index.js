@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import ReduxThunk from 'redux-thunk';
 
 import {} from 'dotenv/config';
@@ -12,7 +12,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import App from './components/App';
 
-const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
+// https://github.com/zalmoxisus/redux-devtools-extension#usage
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const c = composeEnhancers(applyMiddleware(ReduxThunk));
+const store = createStore(reducers, {}, c);
 
 ReactDOM.render(
   <Provider store={store}>
