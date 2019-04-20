@@ -13,11 +13,8 @@ export default class PlaylistShow extends Component {
   };
 
   constructor(props) {
-    console.log(props);
     super(props);
-    // console.log('props', this.props);
     const spotifyTokenExpirationTime = getUserData('spotifyTokenExpirationTime');
-    // user should have a token exp time, if not, redirect to login
     if (!spotifyTokenExpirationTime) {
       this.props.history.push('/');
     }
@@ -26,21 +23,21 @@ export default class PlaylistShow extends Component {
 
     const playlistId = this.props.match.params.id;
 
-    spotify.getPlaylist(playlistId).then(res => {
-      console.log(res);
-      this.setState({ playlist: res });
-    });
+    spotify
+      .getPlaylist(playlistId)
+      .then(res => {
+        this.setState({ playlist: res });
+      })
+      .catch(err => {
+        console.log('Error fetching new playlist', err);
+        this.props.history.push('/home');
+      });
 
     if (this.state.loading) {
       setTimeout(() => {
         this.setState({ loading: false });
       }, 3000);
     }
-  }
-
-  componentDidMount() {
-    // window.location.reload();
-    // this.props.history.push(`/playlist/${playlistId}`);
   }
 
   renderPlaylist() {

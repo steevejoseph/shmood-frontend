@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { Router, BrowserRouter, Route, Switch } from 'react-router-dom';
-
-// history.js
 import { createBrowserHistory } from 'history';
 
-import Landing from './pages/Landing';
-import Home from './pages/Home';
+import { Home, Landing, ListeningWithYou, PlaylistShow } from './pages';
 import NewPlaylistForm from './forms/NewPlaylist';
-import ListeningWithYou from './pages/ListeningWithYou';
-import PlaylistShow from './pages/PlaylistShow';
 
 export const history = createBrowserHistory({});
 
