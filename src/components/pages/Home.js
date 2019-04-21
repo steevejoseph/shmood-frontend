@@ -68,6 +68,12 @@ class Home extends Component {
   async handleUpdateUserLocation() {
     const me = await spotify.getMe();
 
+    // Segment Analytics
+    window.analytics.identify(me.id, {
+      name: me.display_name,
+      email: me.email,
+    });
+
     const succ = position => {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
