@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Router, BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+import { ConnectedRouter } from 'connected-react-router';
 
 import { Home, Landing, ListeningWithYou, PlaylistShow } from './pages';
 import NewPlaylistForm from './forms/NewPlaylist';
@@ -10,7 +11,7 @@ export const history = createBrowserHistory({});
 export default class App extends Component {
   render() {
     return (
-      <Router history={history}>
+      <ConnectedRouter history={history}>
         <Switch>
           <Route path="/listening-with-you" component={ListeningWithYou} />
           <Route path="/playlist/new" component={NewPlaylistForm} />
@@ -18,7 +19,7 @@ export default class App extends Component {
           <Route path="/home" component={Home} />
           <Route path="/" component={Landing} />
         </Switch>
-      </Router>
+      </ConnectedRouter>
     );
   }
 }
