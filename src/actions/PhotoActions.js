@@ -15,23 +15,32 @@ import { createPlaylist } from './PlaylistActions';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-export const getImgurUrl = data => dispatch => {
-  console.log(JSON.stringify(data.get('photo')));
+export const getImgurUrl = values => dispatch => {
   dispatch({ type: IMGUR_PHOTO_ADD_PENDING });
+  const reader = new FileReader();
+  reader.readAsDataURL(values.image[0]);
 
-  axios
-    .post(`${API_URL}/imgur/upload`, { data })
-    .then(res => {
-      console.log('rez', res);
-      dispatch({
-        type: IMGUR_PHOTO_ADD_SUCCESS,
-        payload: res.data,
+  reader.onabort = () => console.log('file reading was aborted');
+  reader.onerror = () => console.log('file reading has failed');
+  reader.onload = () => {
+    // Do whatever you want with the file contents
+    axios
+      .post(`${API_URL}/imgur/upload`, { photo: reader.result })
+      .then(res => {
+        dispatch({
+          type: IMGUR_PHOTO_ADD_SUCCESS,
+          payload: res.data,
+        });
+
+        const imageUrl = res.data.link;
+        const imageDeleteHash = res.data.deletehash;
+        dispatch(submitPhotoUrl({ imageUrl, imageDeleteHash, ...values }));
+      })
+      .catch(err => {
+        console.log('Could not upload to Imgur', err);
+        dispatch({ type: IMGUR_PHOTO_ADD_FAIL });
       });
-    })
-    .catch(err => {
-      console.log('Could not upload to Imgur', err);
-      dispatch({ type: IMGUR_PHOTO_ADD_FAIL });
-    });
+  };
 };
 
 export const submitPhotoUrl = values => dispatch => {
@@ -45,7 +54,6 @@ export const submitPhotoUrl = values => dispatch => {
   axios
     .post(`${API_URL}/azure/submit`, { imageUrl })
     .then(res => {
-      console.log(res);
       dispatch({
         type: SUBMIT_PHOTO_URL_SUCCESS,
         payload: res.data,
@@ -63,9 +71,3 @@ export const submitPhotoUrl = values => dispatch => {
       });
     });
 };
-
-// @refactor: May need to get rid of artifacts of currentPhotoUrl's reduxification.
-export const photoUrlChanged = values => ({
-  type: CURRENT_PHOTO_CHANGED,
-  payload: values.currentPhotoUrl,
-});
