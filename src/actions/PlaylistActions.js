@@ -37,6 +37,8 @@ export const createPlaylist = values => async dispatch => {
   } catch (err) {
     console.log(err);
     dispatch({ type: PLAYLIST_GENERATION_FAIL });
+    alert('Error creating playlist, redirecting you to home page!');
+    history.push('/home');
   }
 };
 
@@ -49,6 +51,8 @@ export const addPhotoToPlaylist = (playlistId, imageData) => async dispatch => {
   } catch (err) {
     console.log('Cannot add photo to playlist', err);
     dispatch({ type: PLAYLIST_PHOTO_ADD_FAIL });
+    alert('Error adding photo to playlist, redirecting you to home page!');
+    history.push('/home');
   }
 };
 
@@ -67,5 +71,7 @@ export const fillPlaylist = (playlistId, values) => async dispatch => {
   } catch (err) {
     console.log('Cannot get recommendations', err);
     dispatch({ type: PLAYLIST_GENERATION_FAIL });
+    alert('Error filling playlist, redirecting you to home page!');
+    history.push('/home');
   }
 };
