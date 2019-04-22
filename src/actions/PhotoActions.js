@@ -8,7 +8,6 @@ import {
   SUBMIT_PHOTO_URL,
   SUBMIT_PHOTO_URL_SUCCESS,
   SUBMIT_PHOTO_URL_FAIL,
-  CURRENT_PHOTO_CHANGED,
 } from './types';
 
 import { createPlaylist } from './PlaylistActions';
