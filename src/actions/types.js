@@ -16,3 +16,7 @@ export const PLAYLIST_GENERATION_FAIL = 'playlist_generation_fail';
 export const PLAYLIST_PHOTO_ADD_STARTED = 'playlist_photo_add_started';
 export const PLAYLIST_PHOTO_ADD_SUCCESS = 'playlist_photo_add_success';
 export const PLAYLIST_PHOTO_ADD_FAIL = 'playlist_photo_add_fail';
+
+export const IMGUR_PHOTO_ADD_PENDING = 'imgur_photo_add_pending';
+export const IMGUR_PHOTO_ADD_SUCCESS = 'imgur_photo_add_success';
+export const IMGUR_PHOTO_ADD_FAIL = 'imgur_photo_add_fail';

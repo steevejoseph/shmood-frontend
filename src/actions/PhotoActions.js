@@ -1,12 +1,39 @@
 /* eslint-disable import/prefer-default-export */
 import axios from 'axios';
 
-import { SUBMIT_PHOTO_URL, SUBMIT_PHOTO_URL_SUCCESS, SUBMIT_PHOTO_URL_FAIL, CURRENT_PHOTO_CHANGED } from './types';
+import {
+  IMGUR_PHOTO_ADD_PENDING,
+  IMGUR_PHOTO_ADD_SUCCESS,
+  IMGUR_PHOTO_ADD_FAIL,
+  SUBMIT_PHOTO_URL,
+  SUBMIT_PHOTO_URL_SUCCESS,
+  SUBMIT_PHOTO_URL_FAIL,
+  CURRENT_PHOTO_CHANGED,
+} from './types';
+
 import { createPlaylist } from './PlaylistActions';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-console.log(API_URL);
+export const getImgurUrl = data => dispatch => {
+  console.log(JSON.stringify(data.get('photo')));
+  dispatch({ type: IMGUR_PHOTO_ADD_PENDING });
+
+  axios
+    .post(`${API_URL}/imgur/upload`, { data })
+    .then(res => {
+      console.log('rez', res);
+      dispatch({
+        type: IMGUR_PHOTO_ADD_SUCCESS,
+        payload: res.data,
+      });
+    })
+    .catch(err => {
+      console.log('Could not upload to Imgur', err);
+      dispatch({ type: IMGUR_PHOTO_ADD_FAIL });
+    });
+};
+
 export const submitPhotoUrl = values => dispatch => {
   dispatch({
     type: SUBMIT_PHOTO_URL,
