@@ -11,7 +11,6 @@ const renderDropzoneInput = field => {
         name={field.name}
         onDrop={(filesToUpload, e) => {
           field.input.onChange(filesToUpload);
-          console.log(filesToUpload);
 
           const reader = new FileReader();
           filesToUpload.forEach(file => reader.readAsDataURL(file));
@@ -19,10 +18,7 @@ const renderDropzoneInput = field => {
           reader.onabort = () => console.log('file reading was aborted');
           reader.onerror = () => console.log('file reading has failed');
           reader.onload = () => {
-            // Do whatever you want with the file contents
-            const binaryStr = reader.result;
-            setBinString(binaryStr);
-            // console.log(binString);
+            setBinString(reader.result);
           };
         }}
       >
