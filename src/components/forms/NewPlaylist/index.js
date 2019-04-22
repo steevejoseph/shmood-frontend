@@ -13,7 +13,7 @@ const styles = {
   },
 };
 
-class ListeningWithYou extends Component {
+class NewPlaylistForm extends Component {
   componentWillMount() {
     this.props.selectScreen('new-playlist');
   }
@@ -45,4 +45,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { selectScreen }
-)(ListeningWithYou);
+)(NewPlaylistForm);
