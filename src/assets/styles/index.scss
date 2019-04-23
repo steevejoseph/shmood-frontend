@@ -1,0 +1,13 @@
+// followed this tut:
+// https://scotch.io/tutorials/using-sass-in-create-react-app-v2
+
+// share vars between sass files. NOTE: ,ust import vars first so that they override bulma vars
+@import "./variables.scss";
+
+// include sass files from node_modules (bulma, whole shebang)
+//  note the ~
+@import "~bulma/bulma.sass";
+
+.body {
+  background-color: #141719;
+}
