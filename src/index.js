@@ -12,7 +12,8 @@ import {} from 'dotenv/config';
 
 import creatRootReducer from './reducers';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/styles/index.scss';
+import 'font-awesome/css/font-awesome.min.css';
 
 import App, { history } from './components/App';
 
@@ -34,5 +35,5 @@ ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
