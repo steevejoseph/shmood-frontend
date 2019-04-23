@@ -9,7 +9,6 @@ import MapContainer from './MapContainer';
 
 const ListeningWithYou = () => (
   <div>
-
     <SideNav />
     <div style={{ marginLeft: 300, marginTop: 50 }}>
       <MapContainer />

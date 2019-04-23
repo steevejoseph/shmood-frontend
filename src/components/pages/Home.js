@@ -96,9 +96,9 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Helmet>
+        {/* <Helmet>
           <style>{'body { background-color: #141719; }'}</style>
-        </Helmet>
+        </Helmet> */}
         <SideNav />
         <div style={styles.screenDiv}>
           <PlaylistScreen playlists={this.state.playlists} />

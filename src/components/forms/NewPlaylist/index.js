@@ -14,9 +14,9 @@ const styles = {
 
 const NewPlaylistForm = () => (
   <div>
-    <Helmet>
+    {/* <Helmet>
       <style>{'body { background-color: #141719; }'}</style>
-    </Helmet>
+    </Helmet> */}
     <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
       <SideNav />
       <div style={styles.screenDiv}>
