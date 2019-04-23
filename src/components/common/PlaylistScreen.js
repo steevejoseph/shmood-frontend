@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Columns } from 'bloomer';
 import PlaylistCard from './PlaylistCard';
 
 class PlaylistScreen extends Component {
@@ -17,9 +18,9 @@ class PlaylistScreen extends Component {
         case 'shmood':
           return playlists
             .filter(playlist => playlist.name.toLowerCase().includes('shmood'))
-            .map(playlist => <PlaylistCard key={playlist.id} playlist={playlist} />);
+            .map(playlist => <PlaylistCard colSize="1/3" key={playlist.id} playlist={playlist} />);
         default:
-          return playlists.map(playlist => <PlaylistCard key={playlist.id} playlist={playlist} />);
+          return playlists.map(playlist => <PlaylistCard colSize="1/3" key={playlist.id} playlist={playlist} />);
       }
     }
 
@@ -27,7 +28,11 @@ class PlaylistScreen extends Component {
   }
 
   render() {
-    return <ol>{this.renderPlaylists()}</ol>;
+    return (
+      <Columns isCentered isMultiline>
+        {this.renderPlaylists()}
+      </Columns>
+    );
   }
 }
 

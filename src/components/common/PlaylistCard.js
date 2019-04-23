@@ -1,26 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardTitle, Media } from 'reactstrap';
-
-const styles = {
-  card: {
-    width: '30em',
-    height: '30em',
-    margin: '10px',
-    float: 'left',
-    backgroundColor: '#1a1414',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'space-between',
-  },
-  cardTitle: {
-    textAlign: 'center',
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 600,
-    height: '50px',
-  },
-};
+import {
+  Column, Card,
+  CardHeader, Image, CardContent, Media, MediaLeft, Title, Subtitle,
+  CardHeaderTitle, CardHeaderIcon, Icon, CardImage, Content, MediaContent,
+} from 'bloomer';
+import Helmet from 'react-helmet';
 
 export default class PlaylistCard extends Component {
   constructor(props) {
@@ -35,8 +20,7 @@ export default class PlaylistCard extends Component {
     if (this.props.playlist.images && this.props.playlist.images.length > 0) {
       imgUrl = this.props.playlist.images[0].url;
     } else {
-      imgUrl =
-        'https://i.kinja-img.com/gawker-media/image/upload/s--ypN6iH9q--/c_fill,fl_progressive,g_center,h_900,q_80,w_1600/zrarqnhmkoaihvzss5ek.jpg';
+      imgUrl = 'https://i.kinja-img.com/gawker-media/image/upload/s--ypN6iH9q--/c_fill,fl_progressive,g_center,h_900,q_80,w_1600/zrarqnhmkoaihvzss5ek.jpg';
     }
 
     this.state = {
@@ -46,21 +30,42 @@ export default class PlaylistCard extends Component {
   }
 
   render() {
-    const { playlist } = this.props;
+    const { playlist, colSize } = this.props;
     const { uri, imgUrl } = this.state;
-    const { card, cardTitle } = styles;
 
     return (
-      <Card style={card}>
-        <CardTitle style={cardTitle}>{playlist.name}</CardTitle>
-        {/* <CardSubtitle>{this.state.uri}</CardSubtitle> */}
-        <Link to={`/playlist/${playlist.id}`}>
-          <Media>
-            <Media object src={imgUrl} alt="Generic placeholder image" width="100%" height="100%" />
-          </Media>
-        </Link>
-        <iframe title={uri} src={uri} width="100%" height="100px" frameBorder="0" allow="encrypted-media" />
-      </Card>
+      <Column isSize={colSize}>
+        <Card>
+          <CardHeader>
+            <CardHeaderTitle>{playlist.name}</CardHeaderTitle>
+            <CardHeaderIcon>
+              <Icon className="fa fa-angle-down" />
+            </CardHeaderIcon>
+          </CardHeader>
+          <CardImage>
+            <Link to={`/playlist/${playlist.id}`}>
+              <Image isRatio="4:3" src={imgUrl} alt="Playlist picture" />
+            </Link>
+          </CardImage>
+          <CardContent isPaddingless isMarginless>
+            {/* <Media>
+              <MediaLeft>
+                <Image isSize="48x48" src="https://via.placeholder.com/96x96" />
+              </MediaLeft>
+              <MediaContent>
+                <Title isSize={4}>{playlist.name}</Title>
+                <Subtitle isSize={6}>{}</Subtitle>
+              </MediaContent>
+            </Media> */}
+            <Content isMarginless isPaddingless>
+              {playlist.description}
+              {/* <br />
+              <small>11:09 PM - 30 October 2014</small> */}
+              <iframe title={uri} src={uri} width="100%" height="50px" frameBorder="0" allow="encrypted-media" />
+            </Content>
+          </CardContent>
+        </Card>
+      </Column>
     );
   }
 }
