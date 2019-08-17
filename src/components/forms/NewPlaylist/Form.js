@@ -5,9 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import {
-  Button, Field as BloomField, Label, Control, Input, Help,
-} from 'bloomer';
+import Spinner from 'react-spinkit';
 import Dropzone from './Dropzone';
 import { getImgurUrl } from '../../../actions';
 
@@ -35,15 +33,14 @@ class PlaylistNew extends Component {
     const {
       meta: { touched, error },
     } = field;
-    const className = `${touched && error ? 'danger' : ''}`;
+    const className = `${touched && error ? 'has-danger' : ''}`;
 
     return (
-      <BloomField className={className}>
-        <Label>{field.label}</Label>
-        {/* line below was changed from 'input', might be bad later */}
-        <Input isColor={className} type="text" {...field.input} placeholder="Playlist Name" />
-        <Help isColor="danger">{touched ? error : ''}</Help>
-      </BloomField>
+      <div className={className} style={{ marginTop: 20, marginBottom: 20 }}>
+        <label>{field.label}</label>
+        <input className="form-control" type="text" {...field.input} />
+        <div className="text-help">{touched ? error : ''}</div>
+      </div>
     );
   }
 
@@ -51,15 +48,18 @@ class PlaylistNew extends Component {
     const { handleSubmit, photoBeingSubmitted } = this.props;
     const { form } = styles;
 
+    if (photoBeingSubmitted) {
+      return <Spinner name="line-scale" color="white" />;
+    }
+
     return (
       <div className="container" style={form}>
         <form onSubmit={handleSubmit(this.onSubmit)}>
           <Field label="Playlist Name" name="name" component={this.renderField} />
           <Field label="Image" name="image" component={Dropzone} />
-          <Control>
-            <Button isColor="primary" style={{ margin: 10 }} type="submit">Submit</Button>
-            <Button isColor="danger" style={{ margin: 10 }}>Cancel</Button>
-          </Control>
+          <button type="submit" className="btn btn-primary" style={{ margin: 20 }}>
+            Submit
+          </button>
         </form>
       </div>
     );
@@ -84,7 +84,7 @@ export default withRouter(
   })(
     connect(
       mapStateToProps,
-      { getImgurUrl },
-    )(PlaylistNew),
-  ),
+      { getImgurUrl }
+    )(PlaylistNew)
+  )
 );

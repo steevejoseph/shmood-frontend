@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import Dropzone from 'react-dropzone';
-import { Box, Image } from 'bloomer';
 
 const renderDropzoneInput = field => {
   const files = field.input.value;
   const [binString, setBinString] = useState('');
 
-
   return (
-    <Box style={{ maxWidth: '50rem' }}>
+    <div>
       <Dropzone
         name={field.name}
         onDrop={(filesToUpload, e) => {
@@ -42,10 +40,10 @@ const renderDropzoneInput = field => {
         // </ul>
         <div>
           <p>Photo preview</p>
-          <Image src={binString} alt="img" width="10%" />
+          <img src={binString} alt="img" width="75%" />
         </div>
       )}
-    </Box>
+    </div>
   );
 };
 

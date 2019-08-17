@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import Helmet from 'react-helmet';
 import Spotify from 'spotify-web-api-js';
 import Spinner from 'react-spinkit';
 import { getUserData, refreshTokensIfExpired } from '../../assets/scripts/spotify/auth';
-import { PlaylistCard, SideNav } from '../common';
-import { Columns, Container } from 'bloomer';
+import { PlaylistCard, SideNav, TopNav } from '../common';
 
 const spotify = new Spotify();
 
@@ -55,19 +55,22 @@ export default class PlaylistShow extends Component {
       );
     }
 
-    return (
-      <Container>
-        <PlaylistCard colSize="1" playlist={this.state.playlist} />
-      </Container>
-);
+    return <PlaylistCard playlist={this.state.playlist} />;
   }
 
   render() {
     return (
       <div>
+        <Helmet>
+          <style>{'body { background-color: #141719; }'}</style>
+          {/* <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style> */}
+        </Helmet>
+        <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
+          <TopNav />
           <SideNav />
-          <Columns>{this.renderPlaylist()}</Columns>
+          <div style={styles.screenDiv}>{this.renderPlaylist()}</div>
         </div>
+      </div>
     );
   }
 }

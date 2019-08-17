@@ -1,10 +1,11 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable class-methods-use-this */
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
+import { selectScreen } from '../../../actions';
 import Form from './Form';
-import { SideNav } from '../../common';
+import { TopNav, SideNav } from '../../common';
 
 const styles = {
   screenDiv: {
@@ -12,19 +13,30 @@ const styles = {
   },
 };
 
-const NewPlaylistForm = () => (
-  <div>
-    {/* <Helmet>
-      <style>{'body { background-color: #141719; }'}</style>
-    </Helmet> */}
-    <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
-      <SideNav />
-      <div style={styles.screenDiv}>
-        <Form />
+class NewPlaylistForm extends Component {
+  componentWillMount() {
+    this.props.selectScreen('new-playlist');
+  }
+
+  render() {
+    return (
+      <div>
+        <Helmet>
+          {/* old, black background */}
+          <style>{'body { background-color: #141719; }'}</style>
+          {/* <style>{`body { background-color:${this.state.bgcol}; transition: 5000ms ease; }`}</style> */}
+        </Helmet>
+        <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
+          <TopNav />
+          <SideNav />
+          <div style={styles.screenDiv}>
+            <Form />;
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-);
+    );
+  }
+}
 
 const mapStateToProps = state => ({
   selectedScreen: state.selectedScreen,
@@ -32,4 +44,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
+  { selectScreen }
 )(NewPlaylistForm);

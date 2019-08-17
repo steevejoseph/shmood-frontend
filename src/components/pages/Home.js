@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import { getUserData, checkInitialLogin, refreshTokensIfExpired } from '../../assets/scripts/spotify/auth';
-import { SideNav, PlaylistScreen } from '../common';
+import { TopNav, SideNav, PlaylistScreen } from '../common';
 import { selectScreen } from '../../actions';
 
 const spotify = new Spotify();
@@ -96,12 +96,15 @@ class Home extends Component {
   render() {
     return (
       <div>
-        {/* <Helmet>
+        <Helmet>
           <style>{'body { background-color: #141719; }'}</style>
-        </Helmet> */}
-        <SideNav />
-        <div style={styles.screenDiv}>
-          <PlaylistScreen playlists={this.state.playlists} />
+        </Helmet>
+        <div className="container-fluid" style={{ display: 'flex', paddingTop: 50 }}>
+          <TopNav />
+          <SideNav />
+          <div style={styles.screenDiv}>
+            <PlaylistScreen playlists={this.state.playlists} />
+          </div>
         </div>
       </div>
     );
@@ -115,6 +118,6 @@ const mapStateToProps = state => ({
 export default withRouter(
   connect(
     mapStateToProps,
-    { selectScreen },
-  )(Home),
+    { selectScreen }
+  )(Home)
 );

@@ -1,30 +1,16 @@
 import React, { Component } from 'react';
-import { Title } from 'bloomer';
 import querystring from 'querystring';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const styles = {
   content: {
-    width: '200px',
-    height: '30px',
-    color: 'white',
-    zIndex: 1,
     position: 'absolute',
-    top: '45%',
-    left: '43%',
-    background: 'rgba(0, 0, 0, 0.0)',
-    textAlign: 'center',
-  },
-
-  oldcontent: {
-    position: 'relative',
     bottom: '50%',
-    // top: '30vh',
     background: 'rgba(0, 0, 0, 0.0)',
     color: '#f1f1f1',
     width: '100%',
-    // padding: 20,
+    padding: 20,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -36,8 +22,7 @@ const styles = {
     border: 'none',
     // background: '#000',
     color: '#fff',
-    // background: 'rgba(0, 0, 0, 0.1)',
-    background: 'rgba(0, 0, 0, 0.0)',
+    background: 'rgba(0, 0, 0, 0.1)',
     cursor: 'pointer',
     borerRadius: 10,
   },
@@ -55,22 +40,19 @@ export default class SpotifyAuth extends Component {
   }
 
   renderButton() {
-    const { loggingIn } = this.state;
-    if (loggingIn) {
-      return (
-        <div style={styles.content}>
-          <Title>logging into Spotify...</Title>
-        </div>
-      );
+    if (this.state.loggingIn) {
+      return <div style={styles.content}>logging into Spotify...</div>;
     }
 
     return (
-      <div style={styles.content}>
-        <a href={this.loginUrl}>
-          <button onClick={() => this.setState({ loggingIn: true })} style={styles.button} type="button">
-            <Title>join the fun</Title>
-          </button>
-        </a>
+      <div>
+        <div style={styles.content}>
+          <a href={this.loginUrl}>
+            <button onClick={() => this.setState({ loggingIn: true })} style={styles.button} type="button">
+              join the fun
+            </button>
+          </a>
+        </div>
       </div>
     );
   }
