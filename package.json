@@ -10,7 +10,7 @@
     "@redux-beacon/segment": "^1.1.0",
     "axios": "^0.18.0",
     "base-64": "^0.1.0",
-    "bootstrap": "^4.3.1",
+    "bootstrap": "^5.0.1",
     "buffer": "^6.0.3",
     "connected-react-router": "^6.4.0",
     "crypto-browserify": "^3.12.1",
